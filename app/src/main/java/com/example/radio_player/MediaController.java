@@ -44,37 +44,43 @@ public class MediaController {
     }
 
     static public void show_radios(RadioGroup radioGroup) {
-        final ObjectMapper mapper = new ObjectMapper();
-        final Handler handler = new Handler();
-        new Thread(() -> {
-            try {
-                rdata = mapper.readValue(new URL("http://4jmb.free.fr/radio/radio.json"), RadioData.class);                                 // read from url
-                handler.post(() -> {
 
-                    List<List<String>> radio_list = rdata.getRadio_list();
+        if(rdata == null){
+            final ObjectMapper mapper = new ObjectMapper();
+            final Handler handler = new Handler();
+            new Thread(() -> {
+                try {
+                    rdata = mapper.readValue(new URL("http://4jmb.free.fr/radio/radio.json"), RadioData.class);                                 // read from url
+                    handler.post(() -> generateButtons(radioGroup));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }else{
+            generateButtons(radioGroup);
+        }
+    }
 
-                    for (int i = 0; i < radio_list.size(); i++) {
-                        RadioButton radioButton = new RadioButton(radioGroup.getContext());
-                        radioButton.setText(radio_list.get(i).get(0));
+    static private void generateButtons(RadioGroup radioGroup){
+        List<List<String>> radio_list = rdata.getRadio_list();
 
-                        LinearLayout.LayoutParams layout_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        for (int i = 0; i < radio_list.size(); i++) {
+            RadioButton radioButton = new RadioButton(radioGroup.getContext());
+            radioButton.setText(radio_list.get(i).get(0));
 
-                        radioButton.setLayoutParams(layout_params);
-                        radioGroup.addView(radioButton);
-                    }
+            LinearLayout.LayoutParams layout_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
-                    ((RadioButton) radioGroup.getChildAt(selectedIndex)).setChecked(true);
+            radioButton.setLayoutParams(layout_params);
+            radioGroup.addView(radioButton);
+        }
 
-                    radioGroup.setOnCheckedChangeListener((radioGrp, i) -> {
-                        View radioButton = radioGrp.findViewById(i);
-                        int index = radioGrp.indexOfChild(radioButton);
+        ((RadioButton) radioGroup.getChildAt(selectedIndex)).setChecked(true);
 
-                        MediaController.play(index);
-                    });
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+        radioGroup.setOnCheckedChangeListener((radioGrp, i) -> {
+            View radioButton = radioGrp.findViewById(i);
+            int index = radioGrp.indexOfChild(radioButton);
+
+            MediaController.play(index);
+        });
     }
 }
