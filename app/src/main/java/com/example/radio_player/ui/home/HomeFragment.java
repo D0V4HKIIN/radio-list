@@ -1,5 +1,6 @@
 package com.example.radio_player.ui.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,11 +8,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.radio_player.R;
 import com.example.radio_player.databinding.FragmentHomeBinding;
@@ -19,17 +18,17 @@ import com.example.radio_player.databinding.FragmentHomeBinding;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private RadioGroup radioGroup;
 
+    @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+//        HomeViewModel homeViewModel =
+//                new ViewModelProvider(this).get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        radioGroup = root.findViewById(R.id.radioGroup);
+        RadioGroup radioGroup = root.findViewById(R.id.radioGroup);
 
         for(int i = 0; i < 10; i++){
             RadioButton radioButton = new RadioButton(getActivity());
